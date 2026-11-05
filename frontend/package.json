@@ -1,0 +1,9 @@
+{
+  "name": "meuestoque-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend do sistema MeuEstoque",
+  "scripts": {
+    "dev": "npx --yes serve . --listen 5173"
+  }
+}

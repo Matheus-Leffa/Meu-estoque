@@ -1,0 +1,17 @@
+{
+  "name": "meuestoque-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend do sistema MeuEstoque",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
