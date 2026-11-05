@@ -10,8 +10,13 @@
     "test": "jest"
   },
   "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3"
+  },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "@types/pg": "^8.15.5",
     "typescript": "^7.0.2"
   }
 }
