@@ -212,5 +212,7 @@ document.querySelector("#close-dialog-button").addEventListener("click", () => d
 document.querySelector("#cancel-button").addEventListener("click", () => dialog.close());
 document.querySelector("#logout-button").addEventListener("click", logout);
 productForm.addEventListener("submit", saveProduct);
-orderButton.addEventListener("click", () => showPageMessage("A tela de pedido será disponibilizada na próxima etapa.", "success"));
+orderButton.addEventListener("click", () => {
+  window.location.href = "./pedido.html";
+});
 loadProducts().catch((error) => showPageMessage(error instanceof Error ? error.message : "Não foi possível carregar os produtos."));
