@@ -1,4 +1,4 @@
-const apiBaseUrl = "http://localhost:3000/api";
+const apiBaseUrl = `${globalThis.MEUESTOQUE_API_URL ?? "http://localhost:3000"}/api`;
 const form = document.querySelector("#login-form");
 const passwordInput = document.querySelector("#password");
 const loginButton = document.querySelector("#login-button");
