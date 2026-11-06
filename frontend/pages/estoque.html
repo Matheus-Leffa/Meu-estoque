@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Consulta e gerenciamento de estoque">
+    <title>MeuEstoque — Estoque</title>
+    <link rel="stylesheet" href="../css/estoque.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand-link" href="./estoque.html">MeuEstoque</a>
+      <div class="topbar-actions">
+        <span id="selection-count" class="selection-count">0 itens no pedido</span>
+        <button id="order-button" class="button button-secondary" type="button">Visualizar pedido</button>
+        <button id="logout-button" class="button button-quiet" type="button">Sair</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Controle de estoque</p>
+          <h1>Produtos</h1>
+        </div>
+        <button id="new-product-button" class="button button-primary" type="button">Cadastrar produto</button>
+      </div>
+
+      <p id="page-message" class="message" role="status" hidden></p>
+
+      <section class="table-card" aria-labelledby="products-title">
+        <h2 id="products-title" class="visually-hidden">Produtos cadastrados</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Referência</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Valor unitário</th>
+                <th scope="col">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="products-body"></tbody>
+          </table>
+        </div>
+        <p id="empty-state" class="empty-state" hidden>Nenhum produto cadastrado.</p>
+      </section>
+    </main>
+
+    <dialog id="product-dialog" aria-labelledby="dialog-title">
+      <form id="product-form" method="dialog">
+        <div class="dialog-heading">
+          <h2 id="dialog-title">Cadastrar produto</h2>
+          <button id="close-dialog-button" class="close-button" type="button" aria-label="Fechar">×</button>
+        </div>
+        <input id="product-id" type="hidden">
+        <label for="reference">Referência</label>
+        <input id="reference" name="reference" type="text" required maxlength="255">
+        <label for="description">Descrição</label>
+        <input id="description" name="description" type="text" required>
+        <label for="brand">Marca</label>
+        <input id="brand" name="brand" type="text" required maxlength="255">
+        <label for="quantity">Quantidade</label>
+        <input id="quantity" name="quantity" type="number" min="0" step="1" required>
+        <label for="price">Valor unitário (R$)</label>
+        <input id="price" name="price" type="text" inputmode="decimal" placeholder="10,50" required>
+        <p id="form-error" class="message message-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button id="cancel-button" class="button button-secondary" type="button">Cancelar</button>
+          <button class="button button-primary" type="submit">Salvar produto</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="../js/estoque.js"></script>
+  </body>
+</html>
