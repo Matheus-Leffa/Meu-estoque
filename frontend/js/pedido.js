@@ -59,6 +59,10 @@ function saveOrder() {
   localStorage.setItem(orderStorageKey, JSON.stringify(order));
 }
 
+function createIdempotencyKey() {
+  return crypto.randomUUID();
+}
+
 function showMessage(message, type = "error") {
   pageMessage.textContent = message;
   pageMessage.className = `message message-${type}`;
@@ -179,8 +183,30 @@ document.querySelector("#back-button").addEventListener("click", () => {
   window.location.href = "./estoque.html";
 });
 document.querySelector("#logout-button").addEventListener("click", logout);
-checkoutButton.addEventListener("click", () => {
-  showMessage("A baixa do pedido será habilitada na próxima etapa.", "success");
+checkoutButton.addEventListener("click", async () => {
+ if (!window.confirm("Tem certeza que quer dar baixa no pedido?")) return;
+
+ checkoutButton.disabled = true;
+ try {
+   const result = await apiRequest("/checkout", {
+     method: "POST",
+     body: JSON.stringify({
+       chaveIdempotencia: createIdempotencyKey(),
+       itens: order.map((item) => ({
+         produtoId: item.productId,
+         quantidadePedido: item.quantidadePedido,
+         valorUnitario: item.valorUnitario,
+       })),
+     }),
+   });
+   localStorage.removeItem(orderStorageKey);
+   window.location.href = "./estoque.html";
+ } catch (error) {
+   checkoutButton.disabled = false;
+   showMessage(
+     "Não foi possível realizar a baixa do pedido. Nenhum produto teve seu estoque alterado.",
+   );
+ }
 });
 loadOrder().catch((error) => {
   showMessage(error instanceof Error ? error.message : "Não foi possível carregar o pedido.");

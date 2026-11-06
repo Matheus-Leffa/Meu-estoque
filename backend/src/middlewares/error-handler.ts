@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from "express";
+import { CheckoutServiceError } from "../services/checkout-service";
 import { ProductServiceError } from "../services/product-service";
 
 export const errorHandler: ErrorRequestHandler = (
@@ -16,6 +17,17 @@ export const errorHandler: ErrorRequestHandler = (
           ? 400
           : 500;
 
+    response.status(statusCode).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof CheckoutServiceError) {
+    const statusCode =
+      error.code === "CHECKOUT_ALREADY_PROCESSED"
+        ? 200
+        : error.code === "CHECKOUT_STOCK_UNAVAILABLE"
+          ? 409
+          : 400;
     response.status(statusCode).json({ error: error.message });
     return;
   }

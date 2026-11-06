@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import { passport } from "./auth/passport";
 import { errorHandler } from "./middlewares/error-handler";
 import { createAuthRoutes } from "./routes/auth-routes";
+import { createCheckoutRoutes } from "./routes/checkout-routes";
 import { createProductRoutes } from "./routes/product-routes";
 
 export function createApp(): express.Express {
@@ -16,6 +17,7 @@ export function createApp(): express.Express {
   });
   app.use("/api/auth", createAuthRoutes());
   app.use("/api/products", createProductRoutes());
+  app.use("/api/checkout", createCheckoutRoutes());
   app.use(errorHandler);
 
   return app;

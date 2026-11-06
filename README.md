@@ -47,6 +47,10 @@ psql $env:DATABASE_URL -f .\database\migrations\002_create_baixas_processadas.sq
 apenas as chaves de idempotência das baixas concluídas; pedidos não são
 persistidos.
 
+A baixa autenticada é realizada por `POST /api/checkout` dentro de uma
+transação PostgreSQL. O corpo contém uma chave UUID de idempotência e os itens
+do pedido. Falhas provocam `ROLLBACK` integral.
+
 ## Deploy com HTTPS
 
 Em produção, o backend deverá ser executado atrás de um proxy reverso ou serviço de hospedagem que forneça certificado TLS válido e redirecione HTTP para HTTPS. Os cookies de autenticação deverão permanecer com `HttpOnly`, `Secure` e `SameSite` configurados conforme o domínio e o fluxo de navegação aprovados.
