@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pedido temporário do MeuEstoque">
+    <title>MeuEstoque — Pedido</title>
+    <link rel="stylesheet" href="../css/estoque.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand-link" href="./estoque.html">MeuEstoque</a>
+      <div class="topbar-actions">
+        <span id="selection-count" class="selection-count">0 itens no pedido</span>
+        <button id="logout-button" class="button button-quiet" type="button">Sair</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Pedido temporário</p>
+          <h1>Itens selecionados</h1>
+        </div>
+        <button id="back-button" class="button button-secondary" type="button">Voltar ao estoque</button>
+      </div>
+
+      <p id="page-message" class="message" role="status" hidden></p>
+
+      <section class="table-card" aria-labelledby="order-title">
+        <h2 id="order-title" class="visually-hidden">Itens do pedido</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Descrição</th>
+                <th scope="col">Quantidade solicitada</th>
+                <th scope="col">Valor unitário</th>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="order-body"></tbody>
+          </table>
+        </div>
+        <p id="empty-state" class="empty-state" hidden>Nenhum produto selecionado.</p>
+        <div class="order-summary">
+          <span>Valor total</span>
+          <strong id="order-total">R$ 0,00</strong>
+        </div>
+      </section>
+
+      <div class="order-actions">
+        <button id="checkout-button" class="button button-primary" type="button" disabled>Dar Baixa</button>
+      </div>
+    </main>
+
+    <script type="module" src="../js/pedido.js"></script>
+  </body>
+</html>

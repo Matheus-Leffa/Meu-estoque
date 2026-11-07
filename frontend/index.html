@@ -3,11 +3,37 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeuEstoque</title>
+    <meta name="description" content="Acesso ao sistema MeuEstoque">
+    <title>MeuEstoque — Acesso</title>
+    <link rel="stylesheet" href="./css/login.css">
   </head>
   <body>
-    <main>
-      <h1>MeuEstoque</h1>
+    <main class="login-page">
+      <section class="login-card" aria-labelledby="login-title">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">ME</span>
+          <div>
+            <p class="eyebrow">Decor Prime</p>
+            <h1 id="login-title">MeuEstoque</h1>
+          </div>
+        </div>
+        <p class="login-intro">Consulte e administre o estoque com agilidade.</p>
+
+        <form id="login-form" novalidate>
+          <label for="password">Senha de acesso</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            autofocus
+          >
+          <p id="login-error" class="message message-error" role="alert" hidden></p>
+          <button id="login-button" type="submit">Acessar</button>
+        </form>
+      </section>
     </main>
+    <script type="module" src="./js/login.js"></script>
   </body>
 </html>

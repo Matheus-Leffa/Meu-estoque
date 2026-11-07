@@ -11,9 +11,12 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "strict": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
     "erasableSyntaxOnly": true
-  }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "tests"]
 }
