@@ -1,4 +1,4 @@
-const apiBaseUrl = `${globalThis.MEUESTOQUE_API_URL ?? "http://localhost:3000"}/api`;
+const apiBaseUrl = "/api";
 const orderStorageKey = "meuestoque_pedido";
 const orderBody = document.querySelector("#order-body");
 const emptyState = document.querySelector("#empty-state");
