@@ -7,7 +7,7 @@ import type {
 } from "../models/product";
 
 interface ProductRow extends QueryResultRow {
-  id: number;
+  id: number | string;
   referencia: string;
   descricao: string;
   marca: string;
@@ -16,14 +16,19 @@ interface ProductRow extends QueryResultRow {
 }
 
 function mapProduct(row: ProductRow): Product {
+  const id = Number(row.id);
   const valorCentavos = Number(row.valor_centavos);
+
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw new Error("O identificador armazenado está fora do limite seguro.");
+  }
 
   if (!Number.isSafeInteger(valorCentavos)) {
     throw new Error("O valor monetário armazenado está fora do limite seguro.");
   }
 
   return {
-    id: row.id,
+    id,
     referencia: row.referencia,
     descricao: row.descricao,
     marca: row.marca,
