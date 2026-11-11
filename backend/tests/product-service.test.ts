@@ -1,6 +1,18 @@
+import { describe, expect, it, jest } from "@jest/globals";
+import type { ProductRepository } from "../src/repositories/product-repository";
 import { ProductService, ProductServiceError } from "../src/services/product-service";
 
-function createRepositoryMock() {
+type ProductRepositoryMock = {
+  [K in
+    | "findAll"
+    | "findBySearch"
+    | "findById"
+    | "create"
+    | "update"
+    | "delete"]: jest.MockedFunction<ProductRepository[K]>;
+};
+
+function createRepositoryMock(): ProductRepositoryMock & ProductRepository {
   return {
     findAll: jest.fn(),
     findBySearch: jest.fn(),
@@ -8,7 +20,7 @@ function createRepositoryMock() {
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  };
+  } as unknown as ProductRepositoryMock & ProductRepository;
 }
 
 describe("ProductService", () => {
