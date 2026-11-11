@@ -26,6 +26,30 @@
         <button id="new-product-button" class="button button-primary" type="button">Cadastrar produto</button>
       </div>
 
+      <form id="product-search-form" class="product-search" novalidate>
+        <div class="search-input-group">
+          <label class="visually-hidden" for="product-search-input">Termo de pesquisa</label>
+          <input id="product-search-input" type="search" placeholder="pesquisar por Referência" autocomplete="off">
+          <button class="button button-primary" type="submit">PESQUISAR</button>
+          <button id="clear-search-button" class="button button-secondary" type="button">Limpar</button>
+        </div>
+        <fieldset class="search-fields">
+          <legend class="visually-hidden">Pesquisar por</legend>
+          <label>
+            <input type="radio" name="search-field" value="referencia" checked>
+            <span>Referência</span>
+          </label>
+          <label>
+            <input type="radio" name="search-field" value="descricao">
+            <span>Descrição</span>
+          </label>
+          <label>
+            <input type="radio" name="search-field" value="marca">
+            <span>Marca</span>
+          </label>
+        </fieldset>
+      </form>
+
       <p id="page-message" class="message" role="status" hidden></p>
 
       <section class="table-card" aria-labelledby="products-title">
@@ -46,7 +70,7 @@
             <tbody id="products-body"></tbody>
           </table>
         </div>
-        <p id="empty-state" class="empty-state" hidden>Nenhum produto cadastrado.</p>
+        <p id="empty-state" class="empty-state" hidden></p>
       </section>
     </main>
 
