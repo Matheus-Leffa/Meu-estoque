@@ -1,6 +1,7 @@
 import type {
   CreateProductInput,
   Product,
+  ProductSearchInput,
   UpdateProductInput,
 } from "../models/product";
 import { ProductRepository } from "../repositories/product-repository";
@@ -9,11 +10,16 @@ export class ProductServiceError extends Error {
   public readonly code:
     | "INVALID_PRODUCT"
     | "INVALID_PRODUCT_ID"
+    | "INVALID_PRODUCT_SEARCH"
     | "PRODUCT_NOT_FOUND";
 
   public constructor(
     message: string,
-    code: "INVALID_PRODUCT" | "INVALID_PRODUCT_ID" | "PRODUCT_NOT_FOUND",
+    code:
+      | "INVALID_PRODUCT"
+      | "INVALID_PRODUCT_ID"
+      | "INVALID_PRODUCT_SEARCH"
+      | "PRODUCT_NOT_FOUND",
   ) {
     super(message);
     this.name = "ProductServiceError";
@@ -78,6 +84,31 @@ function validateProductId(id: number): void {
   }
 }
 
+function validateProductSearch(input: ProductSearchInput): ProductSearchInput {
+  if (
+    input.campo !== "referencia" &&
+    input.campo !== "descricao" &&
+    input.campo !== "marca"
+  ) {
+    throw new ProductServiceError(
+      "A coluna de pesquisa é inválida.",
+      "INVALID_PRODUCT_SEARCH",
+    );
+  }
+
+  if (typeof input.termo !== "string" || input.termo.trim().length === 0) {
+    throw new ProductServiceError(
+      "O termo de pesquisa não pode ser vazio.",
+      "INVALID_PRODUCT_SEARCH",
+    );
+  }
+
+  return {
+    campo: input.campo,
+    termo: input.termo.trim(),
+  };
+}
+
 export class ProductService {
   private readonly repository: ProductRepository;
 
@@ -85,8 +116,10 @@ export class ProductService {
     this.repository = repository;
   }
 
-  public listProducts(): Promise<Product[]> {
-    return this.repository.findAll();
+  public listProducts(search?: ProductSearchInput): Promise<Product[]> {
+    return search === undefined
+      ? this.repository.findAll()
+      : this.repository.findBySearch(validateProductSearch(search));
   }
 
   public async getProductById(id: number): Promise<Product> {

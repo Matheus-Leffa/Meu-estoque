@@ -3,6 +3,7 @@ import { databasePool } from "../config/database";
 import type {
   CreateProductInput,
   Product,
+  ProductSearchInput,
   UpdateProductInput,
 } from "../models/product";
 
@@ -39,6 +40,14 @@ function mapProduct(row: ProductRow): Product {
 
 export class ProductRepository {
   private readonly pool: Pool;
+  private readonly searchableColumns: Record<
+    ProductSearchInput["campo"],
+    string
+  > = {
+    referencia: "referencia",
+    descricao: "descricao",
+    marca: "marca",
+  };
 
   public constructor(pool: Pool = databasePool) {
     this.pool = pool;
@@ -49,6 +58,20 @@ export class ProductRepository {
       `SELECT id, referencia, descricao, marca, quantidade, valor_centavos
        FROM produtos
        ORDER BY id`,
+    );
+
+    return result.rows.map(mapProduct);
+  }
+
+  public async findBySearch(input: ProductSearchInput): Promise<Product[]> {
+    const column = this.searchableColumns[input.campo];
+    const escapedTerm = input.termo.replace(/[\\%_]/g, "\\$&");
+    const result = await this.pool.query<ProductRow>(
+      `SELECT id, referencia, descricao, marca, quantidade, valor_centavos
+       FROM produtos
+       WHERE ${column} ILIKE $1 ESCAPE '\\'
+       ORDER BY id`,
+      [`%${escapedTerm}%`],
     );
 
     return result.rows.map(mapProduct);

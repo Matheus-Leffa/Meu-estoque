@@ -8,8 +8,13 @@ const productForm = document.querySelector("#product-form");
 const formError = document.querySelector("#form-error");
 const dialogTitle = document.querySelector("#dialog-title");
 const orderButton = document.querySelector("#order-button");
+const searchForm = document.querySelector("#product-search-form");
+const searchInput = document.querySelector("#product-search-input");
+const clearSearchButton = document.querySelector("#clear-search-button");
+const searchFields = document.querySelectorAll('input[name="search-field"]');
 
 let products = [];
+let activeSearch = null;
 
 function readCookie(name) {
   const cookie = document.cookie.split("; ").find((item) => item.startsWith(`${name}=`));
@@ -74,6 +79,9 @@ function selectProduct(product) {
 function renderProducts() {
   productsBody.replaceChildren();
   emptyState.hidden = products.length !== 0;
+  emptyState.textContent = activeSearch
+    ? "Nenhum produto encontrado para a pesquisa."
+    : "Nenhum produto cadastrado.";
 
   for (const product of products) {
     const row = document.createElement("tr");
@@ -192,10 +200,59 @@ async function deleteProduct(product) {
   }
 }
 
-async function loadProducts() {
-  products = await apiRequest("/products");
+async function loadProducts(search = activeSearch) {
+  const query = new URLSearchParams();
+  if (search !== null) {
+    query.set("campo", search.campo);
+    query.set("termo", search.termo);
+  }
+  const queryString = query.toString();
+  products = await apiRequest(`/products${queryString ? `?${queryString}` : ""}`);
+  activeSearch = search;
   renderProducts();
   updateOrderCount();
+}
+
+function getSelectedSearchField() {
+  const selectedField = document.querySelector('input[name="search-field"]:checked');
+  return selectedField.value;
+}
+
+function updateSearchPlaceholder() {
+  const labels = {
+    referencia: "Referência",
+    descricao: "Descrição",
+    marca: "Marca",
+  };
+  searchInput.placeholder = `pesquisar por ${labels[getSelectedSearchField()]}`;
+}
+
+async function searchProducts(event) {
+  event.preventDefault();
+  const termo = searchInput.value.trim();
+  if (termo.length === 0) {
+    showPageMessage("Informe um termo para pesquisar.");
+    searchInput.focus();
+    return;
+  }
+
+  try {
+    await loadProducts({ campo: getSelectedSearchField(), termo });
+    pageMessage.hidden = true;
+  } catch (error) {
+    showPageMessage(error instanceof Error ? error.message : "Não foi possível pesquisar os produtos.");
+  }
+}
+
+async function clearSearch() {
+  searchInput.value = "";
+  activeSearch = null;
+  try {
+    await loadProducts(null);
+    pageMessage.hidden = true;
+  } catch (error) {
+    showPageMessage(error instanceof Error ? error.message : "Não foi possível carregar os produtos.");
+  }
 }
 
 async function logout() {
@@ -212,7 +269,13 @@ document.querySelector("#close-dialog-button").addEventListener("click", () => d
 document.querySelector("#cancel-button").addEventListener("click", () => dialog.close());
 document.querySelector("#logout-button").addEventListener("click", logout);
 productForm.addEventListener("submit", saveProduct);
+searchForm.addEventListener("submit", searchProducts);
+clearSearchButton.addEventListener("click", clearSearch);
+for (const field of searchFields) {
+  field.addEventListener("change", updateSearchPlaceholder);
+}
 orderButton.addEventListener("click", () => {
   window.location.href = "./pedido.html";
 });
+updateSearchPlaceholder();
 loadProducts().catch((error) => showPageMessage(error instanceof Error ? error.message : "Não foi possível carregar os produtos."));

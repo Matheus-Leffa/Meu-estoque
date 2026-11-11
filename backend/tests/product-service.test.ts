@@ -1,13 +1,26 @@
+import { describe, expect, it, jest } from "@jest/globals";
+import type { ProductRepository } from "../src/repositories/product-repository";
 import { ProductService, ProductServiceError } from "../src/services/product-service";
 
-function createRepositoryMock() {
+type ProductRepositoryMock = {
+  [K in
+    | "findAll"
+    | "findBySearch"
+    | "findById"
+    | "create"
+    | "update"
+    | "delete"]: jest.MockedFunction<ProductRepository[K]>;
+};
+
+function createRepositoryMock(): ProductRepositoryMock & ProductRepository {
   return {
     findAll: jest.fn(),
+    findBySearch: jest.fn(),
     findById: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  };
+  } as unknown as ProductRepositoryMock & ProductRepository;
 }
 
 describe("ProductService", () => {
@@ -88,5 +101,53 @@ describe("ProductService", () => {
     await expect(service.getProductById(99)).rejects.toMatchObject({
       code: "PRODUCT_NOT_FOUND",
     });
+  });
+
+  it("pesquisa por campo e termo parcial sem aplicar validações de cadastro", async () => {
+    const repository = createRepositoryMock();
+    const products = [
+      {
+        id: 1,
+        referencia: "LUM-001",
+        descricao: "Embutido LED",
+        marca: "Stella",
+        quantidade: 2,
+        valorCentavos: 1000,
+      },
+    ];
+    repository.findBySearch.mockResolvedValue(products);
+    const service = new ProductService(repository);
+
+    await expect(
+      service.listProducts({ campo: "marca", termo: " Ste " }),
+    ).resolves.toEqual(products);
+
+    expect(repository.findBySearch).toHaveBeenCalledWith({
+      campo: "marca",
+      termo: "Ste",
+    });
+  });
+
+  it("rejeita coluna ou termo de pesquisa inválidos", () => {
+    const repository = createRepositoryMock();
+    const service = new ProductService(repository);
+
+    expect(() =>
+      service.listProducts({ campo: "invalida" as never, termo: "produto" }),
+    ).toThrow(
+      new ProductServiceError(
+        "A coluna de pesquisa é inválida.",
+        "INVALID_PRODUCT_SEARCH",
+      ),
+    );
+    expect(() =>
+      service.listProducts({ campo: "marca", termo: "   " }),
+    ).toThrow(
+      new ProductServiceError(
+        "O termo de pesquisa não pode ser vazio.",
+        "INVALID_PRODUCT_SEARCH",
+      ),
+    );
+    expect(repository.findBySearch).not.toHaveBeenCalled();
   });
 });
