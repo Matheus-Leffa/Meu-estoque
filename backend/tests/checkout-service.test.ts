@@ -3,6 +3,7 @@ import {
   CheckoutService,
   CheckoutServiceError,
 } from "../src/services/checkout-service";
+import { describe, expect, it, jest } from "@jest/globals";
 
 const checkoutInput = {
   chaveIdempotencia: "550e8400-e29b-41d4-a716-446655440000",
@@ -17,7 +18,10 @@ function createClientMock() {
 }
 
 function createPoolMock(client: PoolClient) {
-  return { connect: jest.fn().mockResolvedValue(client) } as unknown as Pool;
+  const connect = jest
+    .fn<() => Promise<PoolClient>>()
+    .mockResolvedValue(client);
+  return { connect } as unknown as Pool;
 }
 
 describe("CheckoutService", () => {

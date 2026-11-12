@@ -13,7 +13,8 @@ export const errorHandler: ErrorRequestHandler = (
       error.code === "PRODUCT_NOT_FOUND"
         ? 404
         : error.code === "INVALID_PRODUCT_ID" ||
-            error.code === "INVALID_PRODUCT"
+              error.code === "INVALID_PRODUCT" ||
+              error.code === "INVALID_PRODUCT_SEARCH"
           ? 400
           : 500;
 
